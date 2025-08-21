@@ -63,16 +63,20 @@ for_options2 = odeset('Events', forwardFunc2, 'RelTol', 1e-6, 'AbsTol', 1e-8);
 direction = 'forwardMax';
 [~, A1] = ode45(@(t, x) Simulation(t, x, direction, min_tau1, max_tau1), tspan, ...
     s_i, for_options);
-[~, A_2] = ode45(@(t, x) Simulation(t, x, direction, min_tau2, max_tau2), tspan, ...
+[~, A2] = ode45(@(t, x) Simulation(t, x, direction, min_tau2, max_tau2), tspan, ...
     s_i, for_options2);
 
 % Target value - intersection point
 s_target = A1(end, 1);
 sdot_interp = interp1(F1(:, 1), F1(:, 2), s_target);
+s_target2 = A2(end, 1);
+sdot_interp2 = interp1(F2(:, 1), F2(:, 2), s_target2);
 % Find rows where s @ F > A(end, 1)
 idx = find(F1(:, 1) > s_target);
+idx2 = find(F2(:, 1) > s_target2);
 % Truncated F curve up to A intersection point
 F_trunc = [F1(idx, :); s_target, sdot_interp];
+F_trunc2 = [F2(idx2, :); s_target2, sdot_interp2];
 
 % Convert vectors to string form: [a, b]
 min_str1 = sprintf('[%d, %d]', min_tau1(1), min_tau1(2));
@@ -81,12 +85,17 @@ min_str2 = sprintf('[%d, %d]', min_tau2(1), min_tau2(2));
 max_str2 = sprintf('[%d, %d]', max_tau2(1), max_tau2(2));
 
 hold on
+% Tau 1 values
 plot(vlc1(:, 1), vlc1(:, 2), 'DisplayName', ['VLC \tau_{min} = ' min_str1 ', \tau_{max} = ' max_str1])
 plot(F_trunc(:, 1), F_trunc(:, 2), 'DisplayName', ['F \tau_{min} = ' min_str1 '\tau_{max} = ' max_str1])
 plot(A1(:, 1), A1(:, 2), 'DisplayName', ['A \tau_{min} = ' min_str1 '\tau_{max} = ' max_str1])
+% Tau 2 values
 plot(vlc2(:, 1), vlc2(:, 2), 'DisplayName', ['VLC \tau_{min} = ' min_str2 ', \tau_{max} = ' max_str2])
-plot(F2(:, 1), F2(:, 2), 'DisplayName', ['F \tau_{min} = ' min_str2 '\tau_{max} = ' max_str2])
-plot(A_2(:, 1), A_2(:, 2), 'DisplayName', ['A \tau_{min} = ' min_str2 '\tau_{max} = ' max_str2])
+plot(F_trunc2(:, 1), F_trunc2(:, 2), 'DisplayName', ['F \tau_{min} = ' min_str2 '\tau_{max} = ' max_str2])
+plot(A2(:, 1), A2(:, 2), 'DisplayName', ['A \tau_{min} = ' min_str2 '\tau_{max} = ' max_str2])
+% Intersection points
+plot(A1(end, 1), A1(end, 2), 'go', 'MarkerFaceColor', 'g', 'DisplayName', 's_1')
+plot(A2(end, 1), A2(end, 2), 'go', 'MarkerFaceColor', 'g', 'DisplayName', 's_2')
 
 grid on
 legend()
@@ -94,3 +103,8 @@ xlabel('s')
 ylabel('$\dot{s}$', 'Interpreter', 'latex')
 % Set title
 title('Comparing different sets of \tau_{min} and \tau_{max}')
+
+% Go up one folder, then into Graphs
+graphsFolder = fullfile('..','Graphs');
+% Saves figure as MATLAB code to recreate it
+saveas(gcf, fullfile('Graphs\CompareTaus.png'))

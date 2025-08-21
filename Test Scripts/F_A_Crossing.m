@@ -20,7 +20,7 @@ close all
 % Min joint torques
 min_tau = [-800; -500];
 % Max joint torques
-max_tau = [10000; 14000];
+max_tau = [700; 500];
 % Initial State - (s, sdot) = (0, 0)
 s_i = [0 0];
 % Simulation time
@@ -74,3 +74,8 @@ min_str = sprintf('[%d, %d]', min_tau(1), min_tau(2));
 max_str = sprintf('[%d, %d]', max_tau(1), max_tau(2));
 % Set title
 title(['\tau_{min} = ' min_str ', \tau_{max} = ' max_str])
+
+% Go up one folder, then into Graphs
+graphsFolder = fullfile('..','Graphs');
+% Saves figure as MATLAB code to recreate it
+%saveas(gcf, fullfile('Graphs\Looks_correct.png'))

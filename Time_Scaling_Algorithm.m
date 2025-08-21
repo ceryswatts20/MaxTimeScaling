@@ -6,13 +6,13 @@ close all
 clear all
 
 % Min joint torques
-min_tau = [-500; -800];
+min_tau = [-800; -500];
 % Max joint torques
-max_tau = [500; 700];
+max_tau = [700; 500];
 
 %% Plot VLC
 % Inital sdot value
-sdot_0 = 50;
+sdot_0 = 10;
 % Lots of s values
 s_star = 0:0.001:1;
 
@@ -96,10 +96,11 @@ while true
     else
         % Save point where VLC is crossed
         s_lim = A(end, :);
+        plot(A(:, 1), A(:, 2))
 
         %% Step 4 - Binary Search
         % Initialize binary search parameters
-        tolerance = 1e-2;
+        tolerance = 1e-5;
         % sdot_high = sdot_lim
         sdot_high = s_lim(2);
         sdot_low = 0;

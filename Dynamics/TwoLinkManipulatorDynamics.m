@@ -7,7 +7,7 @@ L = [1; 1.5];
 % Path start point
 q_start = [0; 0];
 % Path end point
-q_end = [deg2rad(220); deg2rad(200)];
+q_end = [deg2rad(220); deg2rad(220)];
 
 % Path Parameterisation
 % q(s) = q_start + s(q_end - q_start)
